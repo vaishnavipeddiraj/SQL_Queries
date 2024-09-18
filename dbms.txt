@@ -1,0 +1,110 @@
+SQL SUBQUERIES PART_2 ppt:
+
+select city
+from car_zip
+where zipcode in (select zipcode 
+from car_customer
+where cus_id in(select cus_id 
+from car_try_out
+where opinion in ('very good', 'excellent')))
+
+select fname, lname 
+from car_employee
+where eid in (select eid
+from car_purchases
+where vin in(select vin 
+from car_cars
+where color = 'black'))
+
+Select fname , lname, email_address
+from university_student
+where zid in (select zid
+from university_grades
+where grade ='A' and cl_id in ((select cl_id
+from university_classes
+where c_num in(select c_num
+from university_courses
+where course_name like '%database%'))))
+
+
+SUB QUERIES practice questions:
+
+select * 
+from car_cars
+where vin not in (select vin from car_purchases) and vin not in(select vin from car_try_out)
+
+select fname,lname
+from university_faculty
+where fid in(select fid 
+from university_classes 
+where c_num in (Select c_num 
+from university_courses
+where credit_hrs = 4))
+
+Select title 
+from video_video
+where isbn in (select isbn
+from video_act_in
+where act_id in(select act_id
+from video_actor
+where first = 'Bradd' and last = 'Pit'))
+
+Practice Questions:
+
+select fname, lname
+from university_student s, university_zip z
+where s.zipcode=z.zipcode and city in ('chicago', 'naperville', 'dekalb')
+
+select fname,lname
+from car_try_out , car_employee
+where car_try_out.eid = car_employee.eid and opinion in('excellent' , 'very good')
+
+select car_purchases.eid, fname,lname
+from car_employee, car_purchases
+where car_employee.eid= car_purchases.eid 
+group by car_purchases.eid, fname, lname
+select COUNT(p.cus_id)
+from car_purchases p, car_customer c
+where p.cus_id= c.cus_id and cus_first='Vikram' and cus_last='Solanki'
+
+select c.cl_id
+from university_classes c, university_courses co
+where c.c_num=co.c_num and co.course_name like '%Database Systems%'
+
+
+
+JOins home work:
+
+select c.cus_id, c.cus_first, c.cus_last
+from video_customer c, video_rents r, video_copy1 co, video_video v
+where c.cus_id=r.cus_id and r.cid =co.cid and co.isbn= v.isbn and title ='Titanic'
+order by c.cus_first, c.cus_last
+having  count(car_purchases.eid) >1
+
+select fname,lname
+from car_employee e, car_purchases p, car_cars c
+where e.eid= p.eid and p.vin= c.vin and c.color='black' 
+
+select s.zid, fname, lname, email_address
+from university_student s, university_grades g, university_classes c, university_courses co
+where s.zid=g.zid and g.cl_id=c.cl_id and c.c_num=co.c_num and g.grade ='A'
+
+
+Practice questions joins
+
+select try_id, cus_id, make, model, year1
+from car_cars t left outer join car_try_out c
+on t.vin = c.vin
+
+select c.cus_id, cus_first, cus_last, sum(price_paid)
+from car_customer c left outer join car_purchases p
+on c.cus_id= p.cus_id
+group by c.cus_id, cus_first, cus_last
+
+select eid, fname, lname,e.zipcode
+from car_zip e left outer join car_employee z
+on e.zipcode= z.zipcode
+
+select e.eid, fname, lname, vin
+from car_employee e left outer join car_purchases p
+on e.eid = p.eid
